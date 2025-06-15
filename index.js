@@ -15,7 +15,7 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
 app.use(express.json()); // ✅ Important
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://inst-agram.netlify.app/'],
+    origin: ['http://localhost:3000', 'https://inst-agram.netlify.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 
@@ -37,11 +37,12 @@ app.post('/api/login', (req, res) => {
         return res.status(400).json({ success: false, message: "Missing fields" });
     }
 
-    User.create({ username, password })
+    User.insertOne({ username, password })
         .then(user => {
             res.status(201).json({ success: true, user });
         })
         .catch(err => {
+            console.error('Error creating user:', err); // 🐞 Add this
             res.status(500).json({ success: false, error: err.message });
         });
 });
